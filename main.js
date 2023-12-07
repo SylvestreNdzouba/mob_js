@@ -8,27 +8,26 @@ const prenoms = [
   "Georgina",
   "Clément",
   "Cléfranchise",
+  "Toto"
 ]
 
 const urlApi = "https://cataas.com/cat"
-//says/text
 
 async function randomCat() {
   const response = await fetch(`${urlApi}?json=true`)
   return `${urlApi}/${(await response.json())._id}`
 }
 
-let catUrlsPromises = []
-
-for (let index = 0; index < prenoms.length; index++) {
-  catUrlsPromises.push(randomCat())
-}
-const catUrls = await Promise.all(catUrlsPromises)
-
-prenoms.forEach((prenom, pos) => {
-  catUrls[pos] = catUrls[pos] + `/says/${prenom}?fontColor=white`
+function createImg(url) {
   const element = document.createElement("img")
-  element.setAttribute("src", catUrls[pos])
+  element.setAttribute("src", url)
   const container = document.getElementById("container")
   container.appendChild(element)
+}
+
+const catUrls = await Promise.all(prenoms.map(() => randomCat()))
+  
+prenoms.forEach((prenom, pos) => {
+  const finalUrl = catUrls[pos] + `/says/${prenom}?fontColor=white`
+  createImg(finalUrl)
 })
