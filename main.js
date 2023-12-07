@@ -2,25 +2,19 @@ const urlApi = "https://cataas.com/cat/";
 
 async function randomCat() {
   const response = await fetch("https://cataas.com/cat?json=true");
-  const data = await response.json();
-  console.log(data);
-  return data._id;
+  return urlApi + (await response.json())._id;
 }
 
-function createURL(id) {
-  return urlApi + id;
-}
-
-let catIds = [];
+let catUrlsPromises = [];
 
 for (let index = 0; index < 3; index++) {
-  catIds.push(randomCat());
+  catUrlsPromises.push(randomCat());
 }
-catIds = await Promise.all(catIds);
+const catUrls = await Promise.all(catUrlsPromises);
 
-catIds.forEach(catId => {
+catUrls.forEach(catUrl => {
   const element = document.createElement("img");
-  element.setAttribute("src", createURL(catId));
+  element.setAttribute("src", catUrl);
   const container = document.getElementById("container");
   container.appendChild(element);
 });
